@@ -1,0 +1,26 @@
+.Sidebar_Chat{
+    display: flex;
+    gap:10px;
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #152642;
+    
+}
+.Sidebar_Chat:hover{
+    background-color:#1c2e4a ;
+}
+.user_info >h2{
+    font-size: 22px;
+    font-weight: 1000;
+    margin-bottom: 8px;
+    color: #fff;
+}
+.user_info >p{
+    color: #b8bbbf;
+}
+.user_info{
+    margin-left: 10px;
+}
+.usericon{
+    margin-top: 8px;
+}
