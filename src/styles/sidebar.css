@@ -6,18 +6,23 @@
     border-radius: 20px 0 0 20px;
     height: 100%;
     width: 30%;
-    background-color: #152642;
-    border-right: 1px solid #324a70;
+    background-color: #252837;
     flex-direction: column;
 }
 .sidebar_header{
     border-radius: 20px 0 0 0 ;
-    background-color: rgba(15, 56, 122, 0.342);
+    background-color: #3457D5;
     display: flex;
     justify-content: space-between;
     padding: 10px;
+    height: 52px;
+}
+
+.sidebar_header_right>svg{
+    margin-top: 9px;
 }
 svg{
+    
     color: rgb(225, 227, 227);
     font-size: 25px;
     
@@ -37,7 +42,7 @@ svg{
     align-items: center;
     height: 40px;
     padding: 10px;
-    background-color: rgba(11, 41, 90, 0.342);
+    background-color:#252837;
 
 }
 .search_container{
@@ -47,7 +52,7 @@ svg{
     width: 100%;
     height: 35px;
     border-radius: 20px;
-    background-color:rgba(15, 56, 122, 0.342);
+    background-color:#161414;
 }
 .search_container>input{
     border: none ;
@@ -66,11 +71,17 @@ svg{
 }
 .sidebar_chats{
     flex:1;
-    background-color:rgba(15, 56, 122, 0.342) ;
+    background-color:#161414 ;
     overflow:scroll ;
     margin: 10px 10px 0px 10px;
+    border-radius: 10px;
+    
+
 }
 .sidebar_chats::-webkit-scrollbar{
     display: none ;
     
+}
+.adduser{
+    cursor: pointer;
 }

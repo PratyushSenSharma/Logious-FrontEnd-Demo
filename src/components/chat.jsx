@@ -1,7 +1,7 @@
 import React from 'react'
-import Sidebar from './sidebar.jsx';
+import Sidebar from '../components/sidebar.jsx';
 import "../styles/chat.css";
-import ChatScreen from './ChatScreen.jsx';
+import ChatScreen from '../components/ChatScreen.jsx';
 const chat = () => {
   return (
     <div className='chat'>
