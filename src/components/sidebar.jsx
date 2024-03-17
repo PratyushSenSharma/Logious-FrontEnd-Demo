@@ -20,6 +20,12 @@ const Sidebar = () => {
           const docRef = await addDoc(collection(db, "users"),
            {
             username: userName,
+            messages:{Pratyush:
+              {
+                messages:["hi"],
+                timestamp:new Date(),
+              }
+            }
           });
           console.log("Document written with ID: './SidebarChat.jsx' ", docRef.id);
     

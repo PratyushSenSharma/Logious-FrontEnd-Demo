@@ -24,11 +24,11 @@ const ChatScreen = () => {
     const docRef = doc(db, "users", userId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
+      console.log("Document data:", docSnap);
       const data = docSnap.data();
       setUserName(data.username)
       setData(data)
-      
+      console.log("AWFAWF",data)
     } else {
       console.log("No such document!");
     }
@@ -43,7 +43,31 @@ const ChatScreen = () => {
     e.preventDefault();
     setInput("")
   }
-  console.log(data1.messages)
+  const sub_data = data1.messages
+  try{
+
+    sub_data = data1.messages;
+  }catch{
+    console.log("error")
+  }
+  const meta_data = {}
+
+  for (var key in sub_data) {
+    if (sub_data.hasOwnProperty(key)) {
+        var value = sub_data[key];
+        console.log("Key: " + key + ", Value: " + value);
+        meta_data[key] = value
+    }
+  }
+
+  try{
+    let tms = meta_data.Pratyush.timestamp.toDate().toUTCString().split(" ")
+    meta_data["timestamp"] = tms[tms.length-2]
+    meta_data["full_timestamp"] = meta_data.Pratyush.timestamp.toDate().toUTCString()
+  }catch{
+    console.log("error")
+  }
+  console.log(meta_data)
 
   return (
     <div className="chatScreen">
@@ -52,7 +76,7 @@ const ChatScreen = () => {
 
         <div className="chat_headerInfo">
           <h3>{userName}</h3>
-          <p>Last seen at....</p>
+          <p>Last seen at {meta_data.full_timestamp}</p>
         </div>
 
         <div className="chat_headerRight">
@@ -65,10 +89,10 @@ const ChatScreen = () => {
 
       </div>
       <div className="chat__body">
-        <div className={`message_body ${true && 'message_bodySender'}`}>
+        <div className={`message_body ${false && 'message_bodySender'}`}>
           
-          <p className="chat_name">{}</p>
-          <p className="chat_message"> Hey Guyz <span className="chat_Timestamp">11:39am</span></p>
+          <p className="chat_name">{data1.username}</p>
+          <p className="chat_message"> Hey Guyz <span className="chat_Timestamp">{meta_data.timestamp}</span></p>
         </div>
 
 
