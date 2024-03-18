@@ -41,24 +41,16 @@ const ChatScreen = () => {
   }, [userId])
   const sendMessage = (e) => {
     e.preventDefault();
-    console.log("abcd",input);
+    console.log("abcd", input);
     setInput(""); // Clear the input field after sending message
-     
-     // Log the input value
-    
+
+    // Log the input value
+
   };
 
   const sub_data = data1.messages
-  try {
 
-    sub_data = data1.messages;
-  } catch {
-    console.log("error")
-  }
-const meta_data = {
-
-    
-  }
+  const meta_data = {}
 
   for (var key in sub_data) {
     if (sub_data.hasOwnProperty(key)) {
@@ -68,34 +60,38 @@ const meta_data = {
     }
   }
   let msg = {
-   
+
   }
-  let isSender=''
-let tms={"full_timestamp":{
-  [userName[0]]:'',
-  Pratyush:''
-}}
+  let isSender = ''
+  let tms = {
+    "full_timestamp": {
+      [userName[0]]: '',
+      Pratyush: ''
+    }
+  }
   try {
     // tms = {Pratyush:meta_data.Pratyush.timestamp.toDate().toUTCString().split(" "),
     //           [userName]:meta_data[userName].timestamp.toDate().toUTCString().split(" ")}
     // // meta_data[["timestamp"] = tms[tms.length - 2]]
-    tms['Pratyush'] =meta_data.Pratyush.timestamp.toDate().toUTCString().split(" ")
-    tms[userName]=meta_data[userName].timestamp.toDate().toUTCString().split(" ")
-    tms["full_timestamp"]['Pratyush'] =meta_data.Pratyush.timestamp.toDate().toUTCString()
-    tms["full_timestamp"][userName]=meta_data[userName].timestamp.toDate().toUTCString()
+    let p_time = Date(meta_data.Pratyush.timestamp)
+    let s_time = Date(meta_data[userName[0]].timestamp)
+    tms['Pratyush'] = p_time.split(" ")[p_time.split(" ").length-5]
+    tms[userName[0]] = s_time.split(" ")[s_time.split(" ").length-5]
+    tms["full_timestamp"]['Pratyush'] = p_time.replace("(India Standard Time)",'')
+    tms["full_timestamp"][userName[0]] = s_time.replace("(India Standard Time)",'')
     // msg = {Pratyush:meta_data.Pratyush.messages,
     //       [userName]:meta_data[userName].messages,}
     // isSender = meta_data.username[1]
-    console.log("Hello i am meta Data",tms)
+    console.log("Hello i am meta Data", tms)
 
   } catch {
     console.log("error")
   }
-  
-  
+
+
   console.log(meta_data)
   // const messageElements = msg.map((message, index) => (
-  
+
   //   <div className={`message_body ${isSender? 'message_bodySender':''}`}key={index}>
   //     <p className="chat_name">{isSender? isSender:data1.username[0]}</p>
   //     <p key={index} className="chat_message">
@@ -114,7 +110,7 @@ let tms={"full_timestamp":{
 
         <div className="chat_headerInfo">
           <h3>{userName[0]}</h3>
-          <p>Last seen at {tms.full_timestamp[userName]}</p>
+          <p>Last seen at {tms.full_timestamp[userName[0]]}</p>
         </div>
 
         <div className="chat_headerRight">
@@ -128,7 +124,7 @@ let tms={"full_timestamp":{
       </div>
       <div className="chat__body">
 
-       
+
       </div>
       <div className="chat_footer">
         <MdOutlineEmojiEmotions className='emoji' />
