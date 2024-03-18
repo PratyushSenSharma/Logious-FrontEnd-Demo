@@ -17,7 +17,7 @@ const ChatScreen = () => {
   const [userName, setUserName] = useState("")
   const [data1, setData] = useState([])
 
- 
+
 
   //getting data from fire base to shown  in the chat screen when selected an user in ui
   const getData = async (userId) => {
@@ -28,7 +28,7 @@ const ChatScreen = () => {
       const data = docSnap.data();
       setUserName(data.username)
       setData(data)
-      console.log("AWFAWF",data)
+      console.log("AWFAWF", data)
     } else {
       console.log("No such document!");
     }
@@ -41,33 +41,71 @@ const ChatScreen = () => {
   }, [userId])
   const sendMessage = (e) => {
     e.preventDefault();
-    setInput("")
-  }
+    console.log("abcd",input);
+    setInput(""); // Clear the input field after sending message
+     
+     // Log the input value
+    
+  };
+
   const sub_data = data1.messages
-  try{
+  try {
 
     sub_data = data1.messages;
-  }catch{
+  } catch {
     console.log("error")
   }
-  const meta_data = {}
+const meta_data = {
+
+    
+  }
 
   for (var key in sub_data) {
     if (sub_data.hasOwnProperty(key)) {
-        var value = sub_data[key];
-        console.log("Key: " + key + ", Value: " + value);
-        meta_data[key] = value
+      var value = sub_data[key];
+      console.log("Key: " + key + ", Value: " + value);
+      meta_data[key] = value
     }
   }
+  let msg = {
+   
+  }
+  let isSender=''
+let tms={"full_timestamp":{
+  [userName[0]]:'',
+  Pratyush:''
+}}
+  try {
+    // tms = {Pratyush:meta_data.Pratyush.timestamp.toDate().toUTCString().split(" "),
+    //           [userName]:meta_data[userName].timestamp.toDate().toUTCString().split(" ")}
+    // // meta_data[["timestamp"] = tms[tms.length - 2]]
+    tms['Pratyush'] =meta_data.Pratyush.timestamp.toDate().toUTCString().split(" ")
+    tms[userName]=meta_data[userName].timestamp.toDate().toUTCString().split(" ")
+    tms["full_timestamp"]['Pratyush'] =meta_data.Pratyush.timestamp.toDate().toUTCString()
+    tms["full_timestamp"][userName]=meta_data[userName].timestamp.toDate().toUTCString()
+    // msg = {Pratyush:meta_data.Pratyush.messages,
+    //       [userName]:meta_data[userName].messages,}
+    // isSender = meta_data.username[1]
+    console.log("Hello i am meta Data",tms)
 
-  try{
-    let tms = meta_data.Pratyush.timestamp.toDate().toUTCString().split(" ")
-    meta_data["timestamp"] = tms[tms.length-2]
-    meta_data["full_timestamp"] = meta_data.Pratyush.timestamp.toDate().toUTCString()
-  }catch{
+  } catch {
     console.log("error")
   }
+  
+  
   console.log(meta_data)
+  // const messageElements = msg.map((message, index) => (
+  
+  //   <div className={`message_body ${isSender? 'message_bodySender':''}`}key={index}>
+  //     <p className="chat_name">{isSender? isSender:data1.username[0]}</p>
+  //     <p key={index} className="chat_message">
+  //       {message}
+  //       <span className="chat_Timestamp">{meta_data.timestamp}</span>
+  //     </p>
+  //   </div>
+  // ));
+
+
 
   return (
     <div className="chatScreen">
@@ -75,8 +113,8 @@ const ChatScreen = () => {
         <FaUserCircle className="usericon" />
 
         <div className="chat_headerInfo">
-          <h3>{userName}</h3>
-          <p>Last seen at {meta_data.full_timestamp}</p>
+          <h3>{userName[0]}</h3>
+          <p>Last seen at {tms.full_timestamp[userName]}</p>
         </div>
 
         <div className="chat_headerRight">
@@ -89,16 +127,8 @@ const ChatScreen = () => {
 
       </div>
       <div className="chat__body">
-        <div className={`message_body ${false && 'message_bodySender'}`}>
-          
-          <p className="chat_name">{data1.username}</p>
-          <p className="chat_message"> Hey Guyz <span className="chat_Timestamp">{meta_data.timestamp}</span></p>
-        </div>
 
-
-
-
-
+       
       </div>
       <div className="chat_footer">
         <MdOutlineEmojiEmotions className='emoji' />

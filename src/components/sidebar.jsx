@@ -19,15 +19,20 @@ const Sidebar = () => {
     
           const docRef = await addDoc(collection(db, "users"),
            {
-            username: userName,
+            username: [userName,"Pratyush"],//first arg recipient 2nd arg logged in user
             messages:{Pratyush:
               {
                 messages:["hi"],
-                timestamp:new Date(),
+                timestamp:[new Date()],
+              },[userName]:
+              {
+                messages:["hi"],
+                timestamp:[new Date()],
               }
             }
+
           });
-          console.log("Document written with ID: './SidebarChat.jsx' ", docRef.id);
+          // console.log("Document written with ID: './SidebarChat.jsx' ", docRef.id);
     
         }
       };
@@ -64,7 +69,7 @@ const Sidebar = () => {
             </div>
             <div className="sidebar_chats">
                     {users.map(user=>(
-                        <SidebarChat key={user.id} id={user.id} name={user.data.username} />
+                        <SidebarChat key={user.id} id={user.id} name={user.data.username[0]} />
                     ))}
             </div>
         </div>
