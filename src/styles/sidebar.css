@@ -3,20 +3,25 @@
     padding: 0;
 }
 .sidebar_body{
+    z-index: 10000;
     border-radius: 20px 0 0 20px;
+    box-shadow: 4px 0 3px rgb(0 101 214 / 36%);
     height: 100%;
     width: 30%;
     background-color: #252837;
     flex-direction: column;
 }
-.sidebar_header{
-    border-radius: 20px 0 0 0 ;
+.sidebar_header {
+    border-radius: 2rem 0 0 2rem;
     background-color: #3457D5;
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    height: 52px;
+    height: 12%;
+    align-items: center;
+    box-shadow: -1px 2px 5px cyan; /* Add box shadow */
 }
+
 
 .sidebar_header_right>svg{
     margin-top: 9px;
@@ -39,6 +44,7 @@ svg{
 } 
 .sidebar_search{
     display: flex;
+    margin-top: 1.2rem;
     align-items: center;
     height: 40px;
     padding: 10px;
@@ -67,7 +73,9 @@ svg{
     color: #fff;
 }
 .search_container>svg{
-    padding: 10px;
+    position: relative;
+    left: -7px;
+    padding: 2.4px;
 }
 .sidebar_chats{
     flex:1;
@@ -85,3 +93,4 @@ svg{
 .adduser{
     cursor: pointer;
 }
+

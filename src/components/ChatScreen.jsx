@@ -8,7 +8,8 @@ import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { FaMicrophoneAlt } from "react-icons/fa";
 import { useParams } from 'react-router-dom';
 import db from '../firebase1';
-import { doc, getDoc, } from "firebase/firestore";
+import { addDoc, doc, getDoc,setDoc,collection, updateDoc } from "firebase/firestore";
+import Sidebar from './sidebar';
 
 
 const ChatScreen = () => {
@@ -28,7 +29,35 @@ const ChatScreen = () => {
   let preprocess = []
   const meta_data = {}
 
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    let curdate = new Date();
+  
+    const frankDocRef = doc(db, "users", userId);
+    await updateDoc(frankDocRef, {
+      messages: {
+        Pratyush: {
+          messages: [...meta_data["Pratyush"].messages, input],
+          timestamp: [...meta_data["Pratyush"].timestamp, curdate],
+        },
+        [userName[0]]: {
+          messages: [...meta_data[userName[0]].messages],
+          timestamp: [...meta_data[userName[0]].timestamp],
+        }
+      }
+    });
+  
+    console.log("abcd", input);
+    setInput(""); // Clear the input field after sending message
+    getData(userId)
+  };
 
+  useEffect(() => {
+    if (userId) {
+      getData(userId);
+    }
+  }, [userId])
+  
 
   //getting data from fire base to shown  in the chat screen when selected an user in ui
   const getData = async (userId) => {
@@ -45,27 +74,9 @@ const ChatScreen = () => {
     }
   }
 
-  useEffect(() => {
-    if (userId) {
-      getData(userId);
-    }
-  }, [userId])
-  const sendMessage = (e) => {
-    e.preventDefault();
-    console.log("abcd", input);
-    setInput(""); // Clear the input field after sending message
-
-    // Log the input value
-
-  };
 
   const sub_data = data1.messages
-
-
-
   console.log("extracted", sub_data)
-
-
   for (var key in sub_data) {
     if (sub_data.hasOwnProperty(key)) {
       var value = sub_data[key];
@@ -73,7 +84,6 @@ const ChatScreen = () => {
       meta_data[key] = value
     }
   }
-
   try {
     // tms = {Pratyush:meta_data.Pratyush.timestamp.toDate().toUTCString().split(" "),
     //           [userName]:meta_data[userName].timestamp.toDate().toUTCString().split(" ")}
@@ -143,7 +153,7 @@ const ChatScreen = () => {
     // msg = {Pratyush:meta_data.Pratyush.messages,
     //       [userName]:meta_data[userName].messages,}
     // isSender = meta_data.username[1]
-    console.log("Hello i am meta Data", _pdateList)
+    console.log("Hello i am meta Data", [...meta_data["Pratyush"].messages,"kholads"])
     console.log("tms_s", mergedDates)
     let mappedDATA = mergedDates.map(tms => {
       console.log(msg[tms])
@@ -158,8 +168,6 @@ const ChatScreen = () => {
   } catch {
     console.log("error")
   }
-
-
   console.log("outloop", preprocess)
   const messageElements = preprocess.map((message, index) => {
     console.log(`ex-${index}`,message)
@@ -168,15 +176,14 @@ const ChatScreen = () => {
       const messageComponents = [];
 
       for (let i = 0; i < messageKeys.length; i++) {
-        console.log("p-6",messageKeys[i])
         let msg_k = messageKeys[i];
-
+        console.log("p-6",msg_k)
         messageComponents.push(
           <div className={`message_body ${(msg_k === 'Pratyush') ? 'message_bodySender' : ''}`} key={`${index}-${i}`}>
-            <p className="chat_name">{(msg_k === 'Pratyush') ? (msg_k === 'Pratyush') : msg_k}</p>
+            <p className="chat_name">{msg_k}</p>
             <p key={`${index}-${i}`} className="chat_message">
               {message[msg_k][0]}
-              <span className="chat_Timestamp">{message[msg_k][1].split(' ')[message[msg_k][1].split(' ').length - 2]}</span>
+              <span className="chat_Timestamp">{message[msg_k][1].split(' ')[message[msg_k][1].split(' ').length - 5]}</span>
             </p>
           </div>
         );
@@ -196,19 +203,14 @@ const ChatScreen = () => {
         </div>
       )
     }
-
-    // <div className={`message_body ${((Object.keys(message)[0]) === 'Pratyush') ? 'message_bodySender' : ''}`} key={index}>
-    //   <p className="chat_name">{(Boolean(Object.keys(message)[0]) === 'Pratyush') ? (Boolean(Object.keys(message)[0]) === 'Pratyush') : Object.keys(message)[0]}</p>
-    //   <p key={index} className="chat_message">
-    //     {message[Object.keys(message)[0]][0]}
-    //     <span className="chat_Timestamp">{message[Object.keys(message)[0]][1].split(' ')[message[Object.keys(message)[0]][1].split(' ').length - 2]}</span>
-    //   </p>
-    // </div>
   });
 
 
 
   return (
+    <div className='chat'>
+          <div className="chat_body">
+            <Sidebar /> {/* Rendering the Sidebar component */}
     <div className="chatScreen">
       <div className="chat_header">
         <FaUserCircle className="usericon" />
@@ -243,6 +245,8 @@ const ChatScreen = () => {
 
       </div>
     </div>
+          </div>
+        </div>
   )
 }
 

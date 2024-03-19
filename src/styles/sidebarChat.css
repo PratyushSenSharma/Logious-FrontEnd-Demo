@@ -1,5 +1,6 @@
 .Sidebar_Chat{
     display: flex;
+    border-bottom: 0.1rem solid rgb(59 130 246 / 0.5);
     gap:10px;
     padding: 10px;
     cursor: pointer;
@@ -10,9 +11,9 @@
     background-color:#3457D5 ;
 }
 .user_info >h2{
-    font-size: 22px;
-    font-weight: 1000;
-    margin-bottom: 8px;
+    font-size: 20px;
+    font-weight: 550;
+    /* margin-bottom: 8px; */
     color: #fff;
 }
 .user_info >p{
