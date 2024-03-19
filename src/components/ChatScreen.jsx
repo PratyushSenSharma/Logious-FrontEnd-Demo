@@ -16,6 +16,17 @@ const ChatScreen = () => {
   const { userId } = useParams();
   const [userName, setUserName] = useState("")
   const [data1, setData] = useState([])
+  let msg = {
+  }
+  let isSender = ''
+  let tms = {
+    "full_timestamp": {
+      [userName[0]]: '',
+      Pratyush: ''
+    }
+  }
+  let preprocess = []
+  const meta_data = {}
 
 
 
@@ -50,7 +61,10 @@ const ChatScreen = () => {
 
   const sub_data = data1.messages
 
-  const meta_data = {}
+
+
+  console.log("extracted", sub_data)
+
 
   for (var key in sub_data) {
     if (sub_data.hasOwnProperty(key)) {
@@ -59,17 +73,7 @@ const ChatScreen = () => {
       meta_data[key] = value
     }
   }
-  let msg = {
 
-  }
-  let isSender = ''
-  let tms = {
-    "full_timestamp": {
-      [userName[0]]: '',
-      Pratyush: ''
-    }
-  }
-  let preprocess = []
   try {
     // tms = {Pratyush:meta_data.Pratyush.timestamp.toDate().toUTCString().split(" "),
     //           [userName]:meta_data[userName].timestamp.toDate().toUTCString().split(" ")}
@@ -78,34 +82,55 @@ const ChatScreen = () => {
     let msg_p = meta_data.Pratyush.messages
     for (let i = 0; i < tms_p.length; i++) {
       // Your code inside the loop here
-      console.log("messages",msg_p[i]);
-      if(msg[tms_p[i].toDate()]){
-        msg[tms_p[i].toDate()].Pratyush[0].push(msg_p[i])
-      }else{
-        msg[tms_p[i].toDate()] = {Pratyush:[[msg_p[i]],tms_p[i].toDate().toUTCString()]}
+      console.log("messages", tms_p[i]);
+      if (msg[tms_p[i].toDate()+tms_p[i].toDate().getMilliseconds()]) {
+        msg[tms_p[i].toDate()+tms_p[i].toDate().getMilliseconds()].Pratyush[0].push(msg_p[i])
+      } else {
+        msg[tms_p[i].toDate()+tms_p[i].toDate().getMilliseconds()] = { Pratyush: [[msg_p[i]], tms_p[i].toDate()+tms_p[i].toDate().getMilliseconds()] }
       }
     }
-    
-    
-    console.log("msg",msg)
-    const _pdateList = tms_p.map(tms_p => tms_p.toDate());
+
+    const _pdateList = tms_p.map(tms_p => tms_p.toDate()+tms_p.toDate().getMilliseconds());
 
     let tms_s = meta_data[userName[0]].timestamp
     let msg_s = meta_data[userName[0]].messages
     for (let i = 0; i < tms_s.length; i++) {
       // Your code inside the loop here
-      console.log("messages",msg_s[i]);
-      if(msg[tms_s[i].toDate()]){
-        msg[tms_s[i].toDate()][userName[0]][0].push(msg_s[i])
-      }else{
-        msg[tms_s[i].toDate()] = {[userName[0]]:[[msg_s[i]],tms_s[i].toDate().toUTCString()]}
+      console.log("messages", msg_s[i]);
+      try {
+        if (msg[tms_s[i].toDate()+tms_s[i].toDate().getMilliseconds()][userName[0]]) {
+          // console.log("phase 1",msg[tms_s[i].toDate()][userName[0]])
+          msg[tms_s[i].toDate()+tms_s[i].toDate().getMilliseconds()][userName[0]][0].push(msg_s[i])
+        } else if (msg[tms_s[i].toDate()+tms_s[i].toDate().getMilliseconds()]["Pratyush"]) {
+          console.log("phase3")
+          msg[tms_s[i].toDate()+tms_s[i].toDate().getMilliseconds()] = {
+            Pratyush: msg[tms_s[i].toDate()+tms_s[i].toDate().getMilliseconds()]["Pratyush"],
+            [userName[0]]: [[msg_s[i]], tms_s[i].toDate()+tms_s[i].toDate().getMilliseconds()]
+          }
+        }
+        else {
+          msg[tms_s[i].toDate()+tms_s[i].toDate().getMilliseconds()] = { [userName[0]]: [[msg_s[i]], tms_s[i].toDate()+tms_s[i].toDate().getMilliseconds()] }
+        }
+
+      } catch {
+        if (msg[tms_s[i].toDate()+tms_s[i].toDate().getMilliseconds()]) {
+          // console.log("phase 1",msg[tms_s[i].toDate()][userName[0]])
+          msg[tms_s[i].toDate()+tms_s[i].toDate().getMilliseconds()][userName[0]][0].push(msg_s[i])
+        }
+        else {
+          msg[tms_s[i].toDate()+tms_s[i].toDate().getMilliseconds()] = { [userName[0]]: [[msg_s[i]], tms_s[i].toDate()+tms_s[i].toDate().getMilliseconds()] }
+        }
+
       }
     }
 
 
-    const _sateList = tms_s.map(tms => tms.toDate());
 
-    // merged tms
+    console.log("msg", msg)
+
+    const _sateList = tms_s.map(tms_s => tms_s.toDate()+tms_s.toDate().getMilliseconds());
+
+    // // merged tms
     const mergedSet = new Set([..._pdateList, ..._sateList]);
     const mergedDates = Array.from(mergedSet).sort((a, b) => a - b);
 
@@ -120,9 +145,14 @@ const ChatScreen = () => {
     // isSender = meta_data.username[1]
     console.log("Hello i am meta Data", _pdateList)
     console.log("tms_s", mergedDates)
-    let mappedDATA = mergedDates.map(tms => msg[tms]);
+    let mappedDATA = mergedDates.map(tms => {
+      console.log(msg[tms])
+      return (
+        msg[tms]
+      )
+    });
     preprocess = mappedDATA
-    console.log("preprocessed",preprocess)
+    console.log("preprocessed", preprocess)
 
 
   } catch {
@@ -130,18 +160,51 @@ const ChatScreen = () => {
   }
 
 
-  console.log("outloop",preprocess)
-  const messageElements = preprocess.map((message, index) => (
-    // console.log(Boolean.parseBoolean(Object.keys(message)[0]))
+  console.log("outloop", preprocess)
+  const messageElements = preprocess.map((message, index) => {
+    console.log(`ex-${index}`,message)
+    if (Object.keys(message).length > 1) {
+      const messageKeys = Object.keys(message);
+      const messageComponents = [];
 
-    <div className={`message_body ${((Object.keys(message)[0])==='Pratyush')? 'message_bodySender':''}`}key={index}>
-      <p className="chat_name">{(Boolean(Object.keys(message)[0])==='Pratyush')? (Boolean(Object.keys(message)[0])==='Pratyush'):Object.keys(message)[0]}</p>
-      <p key={index} className="chat_message">
-        {message[Object.keys(message)[0]][0]}
-        <span className="chat_Timestamp">{message[Object.keys(message)[0]][1].split(' ')[message[Object.keys(message)[0]][1].split(' ').length-2]}</span>
-      </p>
-    </div>
-  ));
+      for (let i = 0; i < messageKeys.length; i++) {
+        console.log("p-6",messageKeys[i])
+        let msg_k = messageKeys[i];
+
+        messageComponents.push(
+          <div className={`message_body ${(msg_k === 'Pratyush') ? 'message_bodySender' : ''}`} key={`${index}-${i}`}>
+            <p className="chat_name">{(msg_k === 'Pratyush') ? (msg_k === 'Pratyush') : msg_k}</p>
+            <p key={`${index}-${i}`} className="chat_message">
+              {message[msg_k][0]}
+              <span className="chat_Timestamp">{message[msg_k][1].split(' ')[message[msg_k][1].split(' ').length - 2]}</span>
+            </p>
+          </div>
+        );
+      }
+      return(
+        messageComponents
+      )
+    } else {
+      return (
+
+        <div className={`message_body ${((Object.keys(message)[0]) === 'Pratyush') ? 'message_bodySender' : ''}`} key={index}>
+          <p className="chat_name">{(Boolean(Object.keys(message)[0]) === 'Pratyush') ? (Boolean(Object.keys(message)[0]) === 'Pratyush') : Object.keys(message)[0]}</p>
+          <p key={index} className="chat_message">
+            {message[Object.keys(message)[0]][0]}
+            <span className="chat_Timestamp">{message[Object.keys(message)[0]][1].split(' ')[message[Object.keys(message)[0]][1].split(' ').length - 5]}</span>
+          </p>
+        </div>
+      )
+    }
+
+    // <div className={`message_body ${((Object.keys(message)[0]) === 'Pratyush') ? 'message_bodySender' : ''}`} key={index}>
+    //   <p className="chat_name">{(Boolean(Object.keys(message)[0]) === 'Pratyush') ? (Boolean(Object.keys(message)[0]) === 'Pratyush') : Object.keys(message)[0]}</p>
+    //   <p key={index} className="chat_message">
+    //     {message[Object.keys(message)[0]][0]}
+    //     <span className="chat_Timestamp">{message[Object.keys(message)[0]][1].split(' ')[message[Object.keys(message)[0]][1].split(' ').length - 2]}</span>
+    //   </p>
+    // </div>
+  });
 
 
 
@@ -165,7 +228,7 @@ const ChatScreen = () => {
 
       </div>
       <div className="chat__body">
-    
+
         {messageElements}
 
 
