@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import '../styles/LoginForm.css';
 import { MdEmail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
 // import { doSignInWithEmailAndPassword } from "../../firebase/auth";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { UserContext } from './UserContext';
+import db from '../firebase1';
+import {  onSnapshot, collection, query, where,getDocs } from "firebase/firestore";
+// import { collection, query, where } from "firebase/firestore";  
+
 
 const LoginForm = () => {
     const [email, setEmail] = useState("");
@@ -18,17 +23,59 @@ const LoginForm = () => {
     const handlePasswordChange = (e) => setPassword(e.target.value);
     const handleRememberMeChange = () => setRememberMe(!rememberMe);
     const handleModalClose = () => setIsModalOpen(false);
+    const { userId, setUserId} = useContext(UserContext);
+    const [usersinfo, setUsersinfo] = useState([]);
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         await doSignInWithEmailAndPassword(email, password);
-    //         navigate("/dashboard");
-    //     } catch (error) {
-    //         setError("Invalid email or password. Please try again.");
-    //         setIsModalOpen(true);
-    //     }
-    // };
+
+    const getUsersinfo = async () => {
+        const q = query(collection(db, "Authentication"), where("email", "==", email), where("password", "==", password));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+            return {
+              error: "Please check Username And password Again"
+            };
+          }
+        const usersinfo = {};
+        querySnapshot.forEach((doc) => {
+          usersinfo["data"] = {
+            chatIds:doc.data().chat_ids,
+            email:doc.data().email,
+            username:doc.data().username
+          }
+        });
+        return usersinfo;
+      };
+    
+      
+      
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();  
+        const usersinfo = await getUsersinfo();
+        console.log(usersinfo)
+        try {
+            if(usersinfo["data"].email==email){
+                console.log("entered")
+                navigate('/users')
+                if (usersinfo["data"].chatIds==[]){
+                    setUserId(null)
+                }else{
+                    setUserId(usersinfo["data"].chatIds)
+                }
+            }
+        } catch (error) {
+            console.log(usersinfo['error'])
+            setUserId(null)
+        }
+       
+        // try {
+        //     await doSignInWithEmailAndPassword(email, password);
+        //     navigate("/dashboard");
+        // } catch (error) {
+        //     setError("Invalid email or password. Please try again.");
+        //     setIsModalOpen(true);
+        // }
+    };
 
     return (
         <div className="body">
@@ -68,7 +115,7 @@ const LoginForm = () => {
                     <Link to="/forgot">Forgot Password?</Link>
                 </div>
 
-                <button type="submit">Login</button>
+                <button type="submit" onClick={handleSubmit}>Login</button>
                 <div className="register-link">
                     <p>
                         Don't have an account? <Link to="/register">Register</Link>

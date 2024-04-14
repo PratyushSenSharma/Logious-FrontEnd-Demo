@@ -1,5 +1,5 @@
 import '../styles/chatScreen.css';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useContext } from 'react'
 import { FaUserCircle } from "react-icons/fa";
 import { CgOptions } from "react-icons/cg";
 import { IoSearchSharp } from "react-icons/io5"
@@ -10,11 +10,12 @@ import { useParams } from 'react-router-dom';
 import db from '../firebase1';
 import { addDoc, doc, getDoc,setDoc,collection, updateDoc } from "firebase/firestore";
 import Sidebar from './sidebar';
+import { UserContext } from './UserContext';
 
 
 const ChatScreen = () => {
   const [input, setInput] = useState("")
-  const { userId } = useParams();
+  const { userId, setUserId } = useContext(UserContext);
   const [userName, setUserName] = useState("")
   const [data1, setData] = useState([])
   let msg = {
@@ -57,6 +58,15 @@ const ChatScreen = () => {
       getData(userId);
     }
   }, [userId])
+
+  const interval = setInterval(() => {
+    // Fetch user ID here (example: from localStorage)
+    
+    console.log("everytime",userId);
+    // getData(userId)
+  }, 1000);
+
+  
   
 
   //getting data from fire base to shown  in the chat screen when selected an user in ui
@@ -66,8 +76,11 @@ const ChatScreen = () => {
     if (docSnap.exists()) {
       console.log("Document data:", docSnap);
       const data = docSnap.data();
-      setUserName(data.username)
-      setData(data)
+      if ((data1!==data && data!==null )|| (userName!==data.username)){
+        setUserName(data.username)  
+        setData(data)
+      }
+      setUserName(data.username) 
       console.log("AWFAWF", data)
     } else {
       console.log("No such document!");
@@ -180,7 +193,9 @@ const ChatScreen = () => {
         console.log("p-6",msg_k)
         messageComponents.push(
           <div className={`message_body ${(msg_k === 'Pratyush') ? 'message_bodySender' : ''}`} key={`${index}-${i}`}>
-            <p className="chat_name">{msg_k}</p>
+            <div className='c_h'>
+            <p className="chat_name">{msg_k} <span className="chat_Timestamp">{message[msg_k][1].split(' ')[message[msg_k][1].split(' ').length - 5]}</span></p>
+            </div>
             <p key={`${index}-${i}`} className="chat_message">
               {message[msg_k][0]}
               <span className="chat_Timestamp">{message[msg_k][1].split(' ')[message[msg_k][1].split(' ').length - 5]}</span>

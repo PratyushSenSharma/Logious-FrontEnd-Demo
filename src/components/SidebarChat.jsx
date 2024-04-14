@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 const SidebarChat = ({id,name }) => {
 
   return(
-    <Link to={`/users/${id}`}>
+    <Link to={`/users`}>
     <div className='Sidebar_Chat'>
         <FaUserCircle className="usericon" src=""/>
         <div className="user_info">

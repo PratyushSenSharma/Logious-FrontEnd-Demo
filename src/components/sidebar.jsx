@@ -1,5 +1,5 @@
 import "../styles/sidebar.css";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import { IoSearchSharp } from "react-icons/io5"
 import { CgOptions } from "react-icons/cg";
 import { FaUserCircle } from "react-icons/fa";
@@ -7,11 +7,14 @@ import { GiRobotHelmet } from "react-icons/gi";
 import { PiUserCirclePlusFill } from "react-icons/pi";
 import SidebarChat from "./SidebarChat";
 import db from '../firebase1';
-import {  onSnapshot, collection, query } from "firebase/firestore";
+import {  onSnapshot, collection, query,where } from "firebase/firestore";
 import { addDoc } from "firebase/firestore"; 
+import { UserContext } from "./UserContext";
 
 
 const Sidebar = () => {
+  
+  const { userId, setUserId} = useContext(UserContext);
     const createChat = async () => {
         const userName = prompt("Please Enter User Name");
         console.log("User name entered:", userName);
@@ -38,7 +41,8 @@ const Sidebar = () => {
       };
     const [users,setUsers]= useState([])
     useEffect(() => {
-        const q = query(collection(db, "users"))
+      if(userId!==null){
+        const q = query(collection(db, "users"),where("id", "in", userId))
         const unsub = onSnapshot(q, (querySnapshot) => {
           setUsers(querySnapshot.docs.map(d => ({
             id:d.id,
@@ -48,6 +52,7 @@ const Sidebar = () => {
         return()=>{
             unsub();
         }
+      }
         
       }, [])
     return (
