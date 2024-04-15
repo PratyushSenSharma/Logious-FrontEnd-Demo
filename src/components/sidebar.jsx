@@ -8,13 +8,13 @@ import { PiUserCirclePlusFill } from "react-icons/pi";
 import SidebarChat from "./SidebarChat";
 import db from '../firebase1';
 import {  onSnapshot, collection, query,where } from "firebase/firestore";
-import { addDoc } from "firebase/firestore"; 
+import { addDoc,updateDoc,doc } from "firebase/firestore"; 
 import { UserContext } from "./UserContext";
 
 
 const Sidebar = () => {
   
-  const { userId, setUserId} = useContext(UserContext);
+  const { chatId, setchatId} = useContext(UserContext);
     const createChat = async () => {
         const userName = prompt("Please Enter User Name");
         console.log("User name entered:", userName);
@@ -35,15 +35,24 @@ const Sidebar = () => {
             }
 
           });
+
+          const docRef2 = doc(db, "users", docRef.id);
+          await updateDoc(docRef2, {
+            id: docRef.id
+          });
+
+          
           // console.log("Document written with ID: './SidebarChat.jsx' ", docRef.id);
     
         }
       };
     const [users,setUsers]= useState([])
     useEffect(() => {
-      if(userId!==null){
-        const q = query(collection(db, "users"),where("id", "in", userId))
+      console.log("insidddddddddddd",chatId,users)
+      if(chatId!==null){
+        const q = query(collection(db, "users"),where("id", "in", chatId))
         const unsub = onSnapshot(q, (querySnapshot) => {
+          console.log("111111111111111111",querySnapshot)
           setUsers(querySnapshot.docs.map(d => ({
             id:d.id,
             data:d.data(),

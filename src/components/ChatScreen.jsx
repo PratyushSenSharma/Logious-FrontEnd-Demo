@@ -59,14 +59,22 @@ const ChatScreen = () => {
     }
   }, [userId])
 
-  const interval = setInterval(() => {
-    // Fetch user ID here (example: from localStorage)
+  // const interval = setInterval(() => {
+  //   // Fetch user ID here (example: from localStorage)
     
-    console.log("everytime",userId);
-    // getData(userId)
-  }, 1000);
+  //   console.log("everytime",userId);
+  //   // getData(userId)  
+  // }, 1000);
 
-  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Fetch user ID here (example: from localStorage)
+      console.log("everytime", userId);
+      getData(userId)
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [userId]);
   
 
   //getting data from fire base to shown  in the chat screen when selected an user in ui

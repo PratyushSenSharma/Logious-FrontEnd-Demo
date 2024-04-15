@@ -24,6 +24,7 @@ const LoginForm = () => {
     const handleRememberMeChange = () => setRememberMe(!rememberMe);
     const handleModalClose = () => setIsModalOpen(false);
     const { userId, setUserId} = useContext(UserContext);
+    const { chatIds, setchatId} = useContext(UserContext);
     const [usersinfo, setUsersinfo] = useState([]);
 
 
@@ -56,12 +57,14 @@ const LoginForm = () => {
         try {
             if(usersinfo["data"].email==email){
                 console.log("entered")
-                navigate('/users')
                 if (usersinfo["data"].chatIds==[]){
                     setUserId(null)
+                    setchatId(null)
                 }else{
-                    setUserId(usersinfo["data"].chatIds)
+                    setUserId(usersinfo["data"].chatIds[0])
+                    setchatId(usersinfo["data"].chatIds)
                 }
+                navigate('/users')
             }
         } catch (error) {
             console.log(usersinfo['error'])
